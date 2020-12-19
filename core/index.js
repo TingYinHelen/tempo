@@ -40,7 +40,7 @@ class Vue {
         // TODO: _render
         vm._update(vm._render());
       };
-
+      // TODO: Watcher
       new Watcher(vm, updateComponent);
     }
 
@@ -48,6 +48,17 @@ class Vue {
   }
 }
 
+Vue.prototype._render = function() {
+  const vm = this;
+  const { render } = vm.$options;
+
+  let vnode;
+  // TODO: _renderProxy
+  // TODO: createElement
+  vnode = render.call(vm._renderProxy, vm.createElement);
+
+  return vnode;
+}
 
 
 Vue._init = function (option) {
