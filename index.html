@@ -8,6 +8,18 @@
   <script src="./core/index.js"></script>
 </head>
 <body>
-  
+  <div id="app"></div>
 </body>
+<script>
+  new Vue({
+    el: "#app",
+    render: function(createElement) {
+      return createElement('div', {
+        style: {
+          border: '1px solid red',
+        },
+      }, 'test=======');
+    }
+  })
+</script>
 </html>

@@ -46,20 +46,72 @@ class Vue {
 
     return mountComponent(this, el);
   }
+
+  _render() {
+    const vm = this;
+    const { render } = vm.$options;
+
+    let vnode;
+    // TODO: _renderProxy
+    // TODO: $createElement
+    vnode = render.call(vm._renderProxy, vm.$createElement);
+
+    return vnode;
+  }
+
+  $createElement(context, tag, data, children) {
+    let vnode;
+    children = normalizeChildren(children);
+    if (typeof tag === 'string') {
+      // 暂时只实现内置标签
+      //TODO: VNode
+      vnode = new VNode(tag, data, children, undefined, undefined, context);
+    }
+    return vnode;
+  }
 }
 
-Vue.prototype._render = function() {
-  const vm = this;
-  const { render } = vm.$options;
-
-  let vnode;
-  // TODO: _renderProxy
-  // TODO: createElement
-  vnode = render.call(vm._renderProxy, vm.createElement);
-
-  return vnode;
+class VNode {
+  constructor(
+    tag,
+    data,
+    children,
+    text,
+    elm,
+    context,
+  ) {
+    this.tag = tag;
+    this.data = data;
+    this.children = children;
+    this.text = text;
+    this.elm = elm;
+    this.context = context;
+  }
 }
 
+function isPrimitive (value) {
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  )
+}
+
+//TODO: VNode
+function createTextVNode(val) {
+  return new VNode(undefined, undefined, undefined, String(val));
+}
+
+function normalizeChildren(children) {
+  const res = [];
+  for (let i = 0; i < children.length; i++) {
+    const c = children[i];
+    if (isPrimitive(c)) {
+      res.push(createTextVNode(c));
+    }
+  }
+  return res;
+}
 
 Vue._init = function (option) {
   const vm = this;
