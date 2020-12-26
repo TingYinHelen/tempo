@@ -13,17 +13,65 @@
 //     });
 //   });
 // }
-
+const nodeOps = {
+  tagName(node) {
+    return node.tagName;
+  },
+  parentNode(node) {
+    return node.parentNode;
+  },
+  createElement(tagName, vnode) {
+    const elm = document.createElement(tagName);
+    return elm;
+  },
+  appendChild(node, child) {
+    node.appendChild(child);
+  },
+  createTextNode(text) {
+    return document.createTextNode(text);
+  },
+};
+function insert(parent, elm) {
+  nodeOps.appendChild(parent, elm);
+}
+// TODO:
+function createChildren(vnode, children, insertedVnodeQueue) {
+  if (Array.isArray(children)) {
+    for (let i = 0; i < children.length; i++) {
+      createElm(children[i], vnode.elm);
+    }
+  } else {
+    nodeOps.appendChild(vnode.elm, nodeOps.createTextNode(children));
+  }
+}
+function createElm(vnode, parentElm) {
+  // console.log('parentElm: ', parentElm);
+  // console.log('vnode: ', vnode);
+  // const data = vnode.data;
+  // const children = v
+  const { tag } = vnode;
+  vnode.elm = nodeOps.createElement(tag, vnode);
+  createChildren(vnode, vnode.children);
+  insert(parentElm, vnode.elm);
+}
 class Vue {
   constructor(options) {
     this.$options = options;
-    this._init(option);
+    this._init(options);
     // _proxy.call(this, option);
     // this._data = option.data;
     // observer(this._data, option.render);
   }
+  _init = function (options) {
+    const { el } = options;
+    if (el) {
+      this.$mount(el);
+    }
+  }
 
   $mount(el) {
+    el = document.querySelector(el);
+    
     const options = this.$options;
     if (!options.render) {
       let template = options.template;
@@ -35,13 +83,14 @@ class Vue {
     }
 
     function mountComponent(vm, el) {
+      vm.$el = el;
       const updateComponent = () => {
         // TODO: _update
-        // TODO: _render
         vm._update(vm._render());
       };
       // TODO: Watcher
-      new Watcher(vm, updateComponent);
+      // new Watcher(vm, updateComponent);
+      updateComponent();
     }
 
     return mountComponent(this, el);
@@ -53,23 +102,44 @@ class Vue {
 
     let vnode;
     // TODO: _renderProxy
-    // TODO: $createElement
-    vnode = render.call(vm._renderProxy, vm.$createElement);
+    vnode = render(vm.$createElement);
 
     return vnode;
   }
 
-  $createElement(context, tag, data, children) {
+  _update(vnode) {
+    const vm = this;
+    
+    vm.__patch__(vm.$el, vnode);
+  }
+
+  __patch__(oldVnode, vnode) {
+    function emptyNodeAt(elm) {
+      return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
+    }
+    oldVnode = emptyNodeAt(oldVnode);
+    console.log('oldVnode: ', oldVnode);
+    const oldElm = oldVnode.elm;
+    const parentElm = nodeOps.parentNode(oldElm);
+    createElm(
+      vnode,
+      parentElm,
+    );
+  }
+
+  $createElement(tag, data, children) {
     let vnode;
-    children = normalizeChildren(children);
+    const vm = this;
+    // TODO: normalizeChildren
+    // children = normalizeChildren(children);
     if (typeof tag === 'string') {
       // 暂时只实现内置标签
-      //TODO: VNode
-      vnode = new VNode(tag, data, children, undefined, undefined, context);
+      vnode = new VNode(tag, data, children, undefined, undefined, vm);
     }
     return vnode;
   }
 }
+
 
 class VNode {
   constructor(
@@ -113,13 +183,6 @@ function normalizeChildren(children) {
   return res;
 }
 
-Vue._init = function (option) {
-  const vm = this;
-  if (option.el) {
-    vm.$mount(el);
-  }
-}
-
 // function observer(data, cb) {
 //   Object.keys(data).forEach((key) => defineReactive(data, key, data[key], cb));
 // }
@@ -155,23 +218,3 @@ Vue._init = function (option) {
 //   }
 // }
 
-const app = new Vue({
-  el: '#app',
-  data: {
-    text: '标题',
-    text2: '正文',
-  },
-  // render() {
-  //   console.log('render======text==', this._data.text);
-  // },
-  template: `
-    <div>
-      <h2>{{text}}</h2>
-      <p>{{text2}}</p>
-    </div>
-  `,
-});
-// app.text2 = 'test------';
-// console.log('app.text2: ', app.text2);
-
-// app.text 
