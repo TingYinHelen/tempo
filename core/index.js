@@ -54,6 +54,32 @@ function createElm(vnode, parentElm) {
   createChildren(vnode, vnode.children);
   insert(parentElm, vnode.elm);
 }
+const componentVNodeHooks = {
+  init() {},
+  destroy() {},
+  insert() {},
+  prepatch() {},
+};
+const hooksToMerge = Object.keys(componentVNodeHooks);
+function mergeHook(one, two) {
+  return function (a,b,c,d) {
+    one(a,b,c,d);
+    two(a,b,c,d);
+  }
+}
+/**
+  *@params data: VNodeData
+
+*/
+function mergeHooks (data) {
+  const hooks = data.hooks;
+  for (let i = 0; i < hooksToMerge.length; i++) {
+    const key = hooksToMerge[i];
+    const fromParent = hooks[key];
+    const our = componentVNodeHooks[key];
+    hooks[key] = fromParent ? mergeHook(ours, fromParent) : our;
+  }
+} 
 
 class Vue {
   constructor(options) {
@@ -132,13 +158,17 @@ class Vue {
     function createComponent (Ctor, data, context, children) {
       // 1. 构造子类构造函数(这里需要实现extend)
       const baseCtor = Vue;
+      // TODO: extend
       Ctor = baseCtor.extend(Ctor);
 
       // 2. 安装组件钩子函数
       mergeHooks(data);
       // 3. 实例化vnode
-      const vnode = new VNode();
-      // 最后返回vnode
+      const vnode = new VNode(
+        `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
+        data, undefined, undefined, undefined, context
+      );
+      return vnode;
     }
 
     let vnode;
@@ -154,6 +184,18 @@ class Vue {
     }
     return vnode;
   }
+}
+
+Vue.extend = function (extendOptions) {
+  const Super = this;
+  const Sub = function VueComponent (option) {
+    // TODO: _init
+    this._init(option);
+  }
+  Sub.prototype = Object.create(Super.prototype);
+
+  Sub.extend = Super.extend
+  return Sub;
 }
 
 
