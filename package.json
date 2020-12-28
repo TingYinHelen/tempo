@@ -1,0 +1,30 @@
+{
+  "name": "toy-vue",
+  "version": "1.0.0",
+  "description": "toy vue",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "gitHooks": {
+    "commit-msg": "commitlint -e $GIT_PARAMS"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TingYinHelen/toy-vue.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "Helen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TingYinHelen/toy-vue/issues"
+  },
+  "homepage": "https://github.com/TingYinHelen/toy-vue#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^4.3.6"
+  }
+}
