@@ -54,6 +54,7 @@ function createElm(vnode, parentElm) {
   createChildren(vnode, vnode.children);
   insert(parentElm, vnode.elm);
 }
+
 class Vue {
   constructor(options) {
     this.$options = options;
@@ -85,7 +86,6 @@ class Vue {
     function mountComponent(vm, el) {
       vm.$el = el;
       const updateComponent = () => {
-        // TODO: _update
         vm._update(vm._render());
       };
       // TODO: Watcher
@@ -103,7 +103,6 @@ class Vue {
     let vnode;
     // TODO: _renderProxy
     vnode = render(vm.$createElement);
-
     return vnode;
   }
 
@@ -117,8 +116,10 @@ class Vue {
     function emptyNodeAt(elm) {
       return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
     }
+    function createComponent(vnode, parentElm) {
+
+    }
     oldVnode = emptyNodeAt(oldVnode);
-    console.log('oldVnode: ', oldVnode);
     const oldElm = oldVnode.elm;
     const parentElm = nodeOps.parentNode(oldElm);
     createElm(
@@ -128,6 +129,18 @@ class Vue {
   }
 
   $createElement(tag, data, children) {
+    function createComponent (Ctor, data, context, children) {
+      // 1. 构造子类构造函数(这里需要实现extend)
+      const baseCtor = Vue;
+      Ctor = baseCtor.extend(Ctor);
+
+      // 2. 安装组件钩子函数
+      mergeHooks(data);
+      // 3. 实例化vnode
+      const vnode = new VNode();
+      // 最后返回vnode
+    }
+
     let vnode;
     const vm = this;
     // TODO: normalizeChildren
@@ -135,6 +148,9 @@ class Vue {
     if (typeof tag === 'string') {
       // 暂时只实现内置标签
       vnode = new VNode(tag, data, children, undefined, undefined, vm);
+    } else {
+      // TODO: createComponent
+      vnode = createComponent(tag, data, vm, children);
     }
     return vnode;
   }
@@ -149,6 +165,7 @@ class VNode {
     text,
     elm,
     context,
+    componentOptions,
   ) {
     this.tag = tag;
     this.data = data;
@@ -156,6 +173,7 @@ class VNode {
     this.text = text;
     this.elm = elm;
     this.context = context;
+    this.componentOptions = componentOptions;
   }
 }
 
