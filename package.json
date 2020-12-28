@@ -6,8 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "gitHooks": {
-    "commit-msg": "commitlint -e $GIT_PARAMS"
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
   },
   "repository": {
     "type": "git",
