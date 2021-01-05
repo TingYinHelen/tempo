@@ -90,10 +90,21 @@ function createElm (vnode, parentElm) {
     return;
   }
 
-  const { tag } = vnode;
+  const { tag, data = {} } = vnode;
+
   // 如果这里tag有值一定是真实的标签
   if (tag) {
     vnode.elm = nodeOps.createElement(tag, vnode);
+
+    // TODO: 暂时这么写，后面需要改为updateAttrs
+    const { style, attrs } = data;
+    for (const key in attrs) {
+      vnode.elm.setAttribute(key, attrs[key]);
+    }
+    for (const key in style) {
+      vnode.elm.style[key] = style[key];
+    }
+
     if (vnode.children) {
       createChildren(vnode, vnode.children);
     } else {
