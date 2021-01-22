@@ -1,0 +1,5 @@
+export Class VNode {
+  constructor () {
+    
+  }
+}
