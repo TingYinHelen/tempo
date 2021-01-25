@@ -7,6 +7,7 @@ Vue.prototype.__patch__ = patch;
 Vue.prototype.$mount = function (el) {
     el = document.querySelector(el);
     
+    
     const options = this.$options;
 
     if (!options.render) {

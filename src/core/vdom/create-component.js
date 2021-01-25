@@ -2,7 +2,7 @@ import { activeInstance } from '/src/core/instance/lifeCycle.js';
 import VNode from './vnode.js';
 
 export function createComponent (Ctor, data, context, children) {
-  // 1. 构造子类(子组件)构造函数
+  // 1. 构造子类(子组件)构造函数VueComponent
   const baseCtor = context.$options._base;
   // 子组件传入的options已经放在Ctor的静态属性上了, 如果后面new 这个Ctor的时候有传入了option，则要跟
   // 现在传入的Ctor做合并
@@ -52,6 +52,7 @@ export function createComponentInstanceForVnode (vnode, parent) {
 
   // 这里Ctor就是子组件的构造函数，vnode的父组件的虚拟node
   // 这里既然new调用的是子组件的构造函数，后面的init函数的vm就是Ctor了(HelloVue组件对象)
+  // 这里其实是在递归子组件
   return new vnode.componentOptions.Ctor(option);
 }
 

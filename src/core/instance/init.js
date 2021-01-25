@@ -28,11 +28,14 @@ export function initMixin(Vue) {
 
 // 工具函数
 function initInternalComponent(vm, options) {
-  // 这里把vm的Ctor上的option赋值给vm.$options的原型
-  // 其实就是组件options(HelloVue的option)
-  // vm.constructor.options是原型上的options
+  // 类的静态属性options赋值给vm.$options的原型
+  // 原本的组件属性放在$options的实例属性上，这里传入的options放在$options的原型链上
+  // const option = {
+  //   _isComponent: true,
+  //   _parentVnode: vnode,
+  //   parent, // activeInstance当前激活的组件实例
+  // };
   const opts = vm.$options = Object.create(vm.constructor.options);
-  // 通过 initInternalComponent 函数传入的几个参数合并到$options里
   opts.parent = options.parent;
   opts._parentVnode = options._parentVnode;
 }
