@@ -1,3 +1,5 @@
+import { mergeOptions } from '../utils/options.js';
+
 export function initExtend(Vue) {
   Vue.extend = function (extendOptions) {
     // 将传入的extendOptions放在Sub的静态属性上
@@ -13,10 +15,15 @@ export function initExtend(Vue) {
     // 继承vue原型
     Sub.prototype = Object.create(Super.prototype);
     Sub.prototype.constructor = Sub;
+
+    Sub.superOptions = Super.options;
+    Sub.extendOptions = extendOptions;
+    
     // 把传入的Ctor放在静态属性上，后面new实例的时候会把它放到$options上
-    Sub.options = { ...Super.options, ...extendOptions };
+    Sub.options = mergeOptions(Super.options, extendOptions);
   
     Sub.extend = Super.extend;
+    Sub['super'] = Super;
   
     // if (name) {
     //   Sub.options.components.name = name;

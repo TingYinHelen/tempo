@@ -62,6 +62,11 @@ function createElm (vnode, parentElm) {
   }
 }
 
+// 工具函数
+function emptyNodeAt(elm) {
+  return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
+}
+
 export function patch (oldVnode, vnode) {
     // oldVnode没有的时候是组件
     // 组件是没有el
@@ -75,11 +80,6 @@ export function patch (oldVnode, vnode) {
         vnode,
         parentElm,
       );
-    }
-
-    // 工具函数
-    function emptyNodeAt(elm) {
-      return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
     }
 
     return vnode.elm;

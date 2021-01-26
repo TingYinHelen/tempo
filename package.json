@@ -1,0 +1,14 @@
+{
+  "name": "toy-vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/TingYinHelen/toy-vue.git",
+  "author": "helen <yinhelen.hlj@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack --config build/webpack.config.js"
+  },
+  "dependencies": {
+    "webpack": "^5.17.0"
+  }
+}

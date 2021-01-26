@@ -1,5 +1,6 @@
 import { initLifecycle } from './lifeCycle.js';
 import { initRender } from './render.js';
+import { mergeOptions } from '../utils/options.js';
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
@@ -9,9 +10,8 @@ export function initMixin(Vue) {
     if (options && options._isComponent) {
       initInternalComponent(vm, options);
     } else {
-      // TODO: mergeOptions
       // merge类静态的option和传入的option
-      vm.$options = { ...vm.constructor.options, ...options };
+      vm.$options = mergeOptions(vm.constructor.options, options, vm);
     }
 
     initLifecycle(vm); // 初始化$children和$parent
