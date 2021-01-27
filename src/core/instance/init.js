@@ -1,4 +1,4 @@
-import { initLifecycle } from './lifeCycle.js';
+import { initLifecycle, callHook } from './lifeCycle.js';
 import { initRender } from './render.js';
 import { mergeOptions } from '../utils/options.js';
 
@@ -16,6 +16,12 @@ export function initMixin(Vue) {
 
     initLifecycle(vm); // 初始化$children和$parent
     initRender(vm);  // $createElement
+    // 数据初始化之前调用
+    callHook(vm, 'beforeCreate');
+
+    // initState(vm);
+    // 初始化完成之后调用
+    callHook(vm, 'created');
 
     const { el } = options;
 

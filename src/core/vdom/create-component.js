@@ -1,5 +1,6 @@
 import { activeInstance } from '/src/core/instance/lifeCycle.js';
 import VNode from './vnode.js';
+import { callHook } from '../instance/lifeCycle.js';
 
 export function createComponent (Ctor, data, context, children) {
   // 1. 构造子类(子组件)构造函数VueComponent
@@ -12,6 +13,7 @@ export function createComponent (Ctor, data, context, children) {
 
   // 2. 安装组件钩子函数 data.hooks
   mergeHooks(data);
+
   // 3. 实例化vnode
   // TODO: propsData, listeners, tag
   const { name } = Ctor.options;
@@ -38,7 +40,10 @@ const componentVNodeHooks = {
     }
   },
   destroy() {},
-  insert() {},
+  insert(vnode) {
+    const { componentInstance } = vnode;
+    callHook(componentInstance, 'mounted');
+  },
   prepatch() {},
 };
 

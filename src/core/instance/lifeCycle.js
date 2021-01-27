@@ -17,12 +17,20 @@ export function initLifecycle(vm) {
   vm.$parent = parent;
 }
 
+export function callHook (vm, hook) {
+  const handlers = vm.$options[hook];
+  if (handlers) {
+    for (let i = 0, j = handlers.length; i < j; i++) {
+      handlers[i].call(vm);
+    }
+  }
+}
+
 // TODO: mountComponent会调用 beforeMount 和 mounted
 export function mountComponent(vm, el) {
   vm.$el = el;
 
-  // TODO: callHook
-  // callHook(vm, 'beforeMount');
+  callHook(vm, 'beforeMount');
 
   const updateComponent = () => {
     vm._update(vm._render());
