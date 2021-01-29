@@ -7,13 +7,17 @@
   <title>Toy Component</title>
   <script type="module">
     import Vue from '/src/index.js';
-    import { HelloVue } from '/test/index.js';
+
+    Vue.component('button-counter', {
+      render: function (h) {
+        return h('button', {}, 'global button');
+      },
+    });
 
     new Vue({
       el: '#app',
-      components: { HelloVue }, 
-      render: function(createElement) {
-        return createElement(HelloVue);
+      render: function(h) {
+        return h('button-counter');
       },
     });
   </script>

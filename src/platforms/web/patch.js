@@ -65,9 +65,9 @@ function createComponent (vnode, insertedVnodeQueue, parentElm) {
     }
     
     if (vnode.componentInstance) {
-      // TODO: 这里vnode.elm为空(暂时不知道为什么为空，用vnode.componentInstance.$el代替)
+      vnode.elm = vnode.componentInstance.$el;
       insertedVnodeQueue.push(vnode);
-      insert(parentElm, vnode.componentInstance.$el);
+      insert(parentElm, vnode.elm);
       return true;
     }
   }

@@ -7,7 +7,9 @@ export function createComponent (Ctor, data, context, children) {
   const baseCtor = context.$options._base;
   // 子组件传入的options已经放在Ctor的静态属性上了, 如果后面new 这个Ctor的时候有传入了option，则要跟
   // 现在传入的Ctor做合并
-  Ctor = baseCtor.extend(Ctor);
+  if (typeof Ctor === 'object') {
+    Ctor = baseCtor.extend(Ctor);
+  }
 
   data = data || {};
 
