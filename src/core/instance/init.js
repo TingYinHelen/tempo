@@ -1,5 +1,6 @@
 import { initLifecycle, callHook } from './lifeCycle.js';
 import { initRender } from './render.js';
+import { initState } from './state.js'
 import { mergeOptions } from '../utils/options.js';
 
 export function initMixin(Vue) {
@@ -19,7 +20,7 @@ export function initMixin(Vue) {
     // 数据初始化之前调用
     callHook(vm, 'beforeCreate');
 
-    // initState(vm);
+    initState(vm);
     // 初始化完成之后调用
     callHook(vm, 'created');
 
