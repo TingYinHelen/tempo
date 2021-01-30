@@ -23,7 +23,7 @@ function initProps (vm, propsOptions) {
   }
 }
 function initData (vm, data) {
-  data = typeof data === 'function' ? getData(vm, data) : data;
+  vm.$options.data = data = typeof data === 'function' ? getData(vm, data) : data;
   for (const key in data) {
     proxy(vm, 'data', key);
   }

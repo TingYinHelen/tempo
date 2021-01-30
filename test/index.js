@@ -1,11 +1,5 @@
 export const HelloChild = {
   name: 'HelloChild',
-  created() {
-    console.log('HelloChild created');
-  },
-  mounted() {
-    console.log('HelloChild mounted');
-  },
   render: function (createElement) {
     return createElement('div', {
       attrs: {
@@ -20,12 +14,6 @@ export const HelloChild = {
 
 export const HelloH = {
   name: 'HelloH',
-  created() {
-    console.log('HelloH created');
-  },
-  mounted() {
-    console.log('HelloH mounted');
-  },
   render: function (createElement) {
     return createElement('h1', {
       attrs: {
@@ -44,16 +32,17 @@ export const HelloVue = {
   props: {
     propsTest: 'propsTest',
   },
-  data: {
-    createdText: 'HelloVue created',
-    mountedText: 'HelloVue mounted',
+  data() {
+    return {
+      createdText: 'HelloVue created',
+      mountedText: 'HelloVue mounted',
+    };
   },
   created() {
     console.log('created=====', this.createdText);
   },
   mounted() {
     console.log('mounted=====', this.mountedText);
-    console.log('propsTest=====', this.propsTest);
     setTimeout(() => {
       this.createdText = '测试一下';
       for (const key in this) {
