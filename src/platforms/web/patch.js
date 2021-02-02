@@ -43,15 +43,11 @@ function createElm (vnode, insertedVnodeQueue, parentElm) {
     for (const key in style) {
       vnode.elm.style[key] = style[key];
     }
-
     if (vnode.children) {
       createChildren(vnode, vnode.children, insertedVnodeQueue);
-    } else {
-      insert(parentElm, vnode.elm);
     }
+    parentElm && insert(parentElm, vnode.elm);
   }
-
-
 }
 
 // 工具函数
@@ -76,7 +72,7 @@ function createComponent (vnode, insertedVnodeQueue, parentElm) {
 function emptyNodeAt(elm) {
   return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
 }
-
+// oldVnode其实是$el
 export function patch (oldVnode, vnode) {
   const insertedVnodeQueue = [];
   // oldVnode没有的时候是组件
@@ -84,14 +80,20 @@ export function patch (oldVnode, vnode) {
   if (!oldVnode) {
     createElm(vnode, insertedVnodeQueue);
   } else {
-    oldVnode = emptyNodeAt(oldVnode); // 生成一个空的，标签吗为oldVnode提供的标签
-    const oldElm = oldVnode.elm;
-    const parentElm = nodeOps.parentNode(oldElm);
-    createElm(
-      vnode,
-      insertedVnodeQueue,
-      parentElm,
-    );
+    const isRealElement = oldVnode.nodeType;
+    // TODO: 这里把所有oldVnode不是真实dom标签的都理解为改变data属性值后的重新渲染
+    if (!isRealElement) {
+      vnode.elm = oldVnode.elm;
+    } else {
+      oldVnode = emptyNodeAt(oldVnode); // 生成一个空的，标签吗为oldVnode提供的标签
+      const oldElm = oldVnode.elm;
+      const parentElm = nodeOps.parentNode(oldElm);
+      createElm(
+        vnode,
+        insertedVnodeQueue,
+        parentElm,
+      );
+    }
   }
 
   invokeInsertHook(insertedVnodeQueue);  

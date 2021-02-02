@@ -9,7 +9,7 @@ export function renderMixin (Vue) {
 
     let vnode;
     // TODO: _renderProxy
-    vnode = render(vm.$createElement);
+    vnode = render.call(vm, vm.$createElement);
 
     vnode.parent = _parentVnode;
     return vnode;

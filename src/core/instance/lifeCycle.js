@@ -1,3 +1,4 @@
+import { Watcher } from '../observer/watcher.js';
 // 保持当前的上下文vue实例，它是在lifecycle模块的全局变量
 // 在实例化子组件的过程中，他需要知道当前上下文Vue实例是什么，并把它作为子组件的父Vue实例
 export let activeInstance = null;
@@ -35,9 +36,7 @@ export function mountComponent(vm, el) {
   const updateComponent = () => {
     vm._update(vm._render());
   };
-  // TODO: Watcher
-  // new Watcher(vm, updateComponent);
-  updateComponent();
+  new Watcher(vm, updateComponent);
 
   // TODO: callHook
   // callHook(vm, 'mounted');
@@ -49,6 +48,7 @@ export function lifecycleMixin(Vue) {
 
     // const prevEl = vm.$el;
     const prevVnode = vm._vnode;
+    vm._vnode = vnode;
 
     // 实际上prevActiveInstance和当前的vm是一个父子关系。
     const prevActiveInstance = activeInstance;
@@ -59,10 +59,12 @@ export function lifecycleMixin(Vue) {
     vm._vnode = vnode;
     
     if (!prevVnode) {
-      // 初始化的render
+      // 第一次生成vnode
       vm.$el = vm.__patch__(vm.$el, vnode);
     } else {
       // updates
+      // 一般是修改了data的属性值之后重新渲染
+      vm.$el = vm.__patch__(prevVnode, vnode);
     }
     
     
