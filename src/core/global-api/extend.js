@@ -15,11 +15,11 @@ export function initExtend(Vue) {
     // 继承vue原型
     Sub.prototype = Object.create(Super.prototype);
     Sub.prototype.constructor = Sub;
-
+    // 继承全局配置
     Sub.superOptions = Super.options;
     Sub.extendOptions = extendOptions;
     
-    // 把传入的Ctor放在静态属性上，后面new实例的时候会把它放到$options上
+    // 把传入的Ctor放在options的静态属性上，后面new实例的时候会把它放到$options上
     Sub.options = mergeOptions(Super.options, extendOptions);
   
     Sub.extend = Super.extend;

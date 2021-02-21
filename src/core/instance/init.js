@@ -36,7 +36,6 @@ export function initMixin(Vue) {
 // 工具函数
 function initInternalComponent(vm, options) {
   // 类的静态属性options赋值给vm.$options的原型
-  // 原本的组件属性放在$options的实例属性上，这里传入的options放在$options的原型链上
   // const option = {
   //   _isComponent: true,
   //   _parentVnode: vnode,

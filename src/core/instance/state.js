@@ -29,12 +29,9 @@ const sharedPropertyDefinition = {
 }
 function proxy (target, sourceKey, key) {
   sharedPropertyDefinition.get = function () {
-    console.log('proxy get');
     return this.$options[sourceKey][key];
   }
   sharedPropertyDefinition.set = function (val) {
-    console.log('val: -----', val);
-    console.log('proxy set');
     this.$options[sourceKey][key] = val;
   }
   Object.defineProperty(target, key, sharedPropertyDefinition);

@@ -1,7 +1,7 @@
 export default class VNode {
   constructor(
     tag,
-    data,
+    data, // VNodeData 任何可以对vnode进行描述的内容，都存放到vnodedata中
     children,
     text,
     elm,

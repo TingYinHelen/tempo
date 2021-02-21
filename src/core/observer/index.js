@@ -23,20 +23,14 @@ function defineReactive (obj, key, val) {
   // const getter = property.get;
   // const setter = property.set;
 
-  // console.log('getter: ', getter);
-  // console.log('setter: ', setter);
   
   Object.defineProperty(obj, key, {
     get () {
-      console.log('$options observe get--');
       dep.depend();
       return val;
     },
     set (newVal) {
-      console.log('$options observe set==', val);
       val = newVal;
-      console.log('================', obj[key]);
-      debugger
       dep.notify();
     }, 
   });

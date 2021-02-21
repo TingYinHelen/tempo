@@ -23,6 +23,10 @@ function insert (parent, elm) {
 }
 
 function createElm (vnode, insertedVnodeQueue, parentElm) {
+  // 1. 首先把vnode全部当做组件处理
+  // 2. 如果组件创建失败，则检查tag是否有定义，如果有则按照一般标签处理
+  // 3. 如果没有定义tag，则检查是否是注释，如果不是注释，则当做文本处理
+  
   // 递归组件
   if (createComponent(vnode, insertedVnodeQueue, parentElm)) {
     return;
@@ -72,6 +76,33 @@ function createComponent (vnode, insertedVnodeQueue, parentElm) {
 function emptyNodeAt(elm) {
   return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
 }
+function patchVnode (vnode, oldVnode) {
+  const elm = vnode.elm = oldVnode.elm;
+  const data = vnode.data;
+  const ch = vnode.children;
+  const oldCh = oldVnode.children;
+
+  if (ch && oldCh) {
+    if (typeof ch === 'string' && typeof oldCh === 'string') {
+      nodeOps.setTextContent(elm, ch);
+    } else {
+      // TODO:
+      // updateChildren
+    }
+  } else if (ch) {
+    for (const child of oldCh) {
+      nodeOps.removeChild(elm, child.elm);
+    }
+    for (const child of ch) {
+      nodeOps.addChild(elm, child.elm);
+    }
+  } else if (oldCh) {
+    for (const child of oldCh) {
+      nodeOps.removeChild(elm, child.elm);
+    }
+  }
+  // TODO: vnodedata的比对没有写
+}
 // oldVnode其实是$el
 export function patch (oldVnode, vnode) {
   const insertedVnodeQueue = [];
@@ -81,9 +112,8 @@ export function patch (oldVnode, vnode) {
     createElm(vnode, insertedVnodeQueue);
   } else {
     const isRealElement = oldVnode.nodeType;
-    // TODO: 这里把所有oldVnode不是真实dom标签的都理解为改变data属性值后的重新渲染
     if (!isRealElement) {
-      vnode.elm = oldVnode.elm;
+      patchVnode(vnode, oldVnode);
     } else {
       oldVnode = emptyNodeAt(oldVnode); // 生成一个空的，标签吗为oldVnode提供的标签
       const oldElm = oldVnode.elm;
@@ -96,7 +126,7 @@ export function patch (oldVnode, vnode) {
     }
   }
 
-  invokeInsertHook(insertedVnodeQueue);  
+  invokeInsertHook(insertedVnodeQueue);
 
   return vnode.elm;
 }

@@ -8,6 +8,7 @@ export function createComponent (Ctor, data, context, children) {
   // 子组件传入的options已经放在Ctor的静态属性上了, 如果后面new 这个Ctor的时候有传入了option，则要跟
   // 现在传入的Ctor做合并
   if (typeof Ctor === 'object') {
+    // sub, 执行下面这句后Ctor变成了构造函数(该构造函数的静态属性options就是用户传入的options)
     Ctor = baseCtor.extend(Ctor);
   }
 
@@ -33,7 +34,6 @@ const componentVNodeHooks = {
       // TODO: keepAlive
     } else {
       // 子组件的实例化就在这个时机执行
-      // createComponentInstanceForVnode是用来生成parent
       // TODO: activeInstance
       const child = vnode.componentInstance = createComponentInstanceForVnode(vnode, activeInstance);
       // 组件的el为undefined

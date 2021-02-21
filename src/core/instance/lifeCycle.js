@@ -47,8 +47,7 @@ export function lifecycleMixin(Vue) {
     const vm = this;
 
     // const prevEl = vm.$el;
-    const prevVnode = vm._vnode;
-    vm._vnode = vnode;
+    const  prevVnode = vm._vnode;
 
     // 实际上prevActiveInstance和当前的vm是一个父子关系。
     const prevActiveInstance = activeInstance;

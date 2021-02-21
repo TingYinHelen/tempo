@@ -1,5 +1,6 @@
 import { Dep } from './dep.js';
 
+// Watch存储mountComponent(vnode+patch)
 export class Watcher {
   deps = [];
   depsId = [];

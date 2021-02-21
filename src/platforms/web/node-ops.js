@@ -17,4 +17,13 @@ export default {
   createTextNode(text) {
     return document.createTextNode(text);
   },
+  setTextContent(node, text) {
+    node.textContent = text;
+  },
+  removeChild(node, child) {
+    node.removeChild(child);
+  },
+  addChild(node, child) {
+    node.appendChild(child);
+  },
 };

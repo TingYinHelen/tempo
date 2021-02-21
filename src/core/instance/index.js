@@ -14,3 +14,4 @@ lifecycleMixin(Vue); // _update
 renderMixin(Vue); // _render
 
 export default Vue;
+

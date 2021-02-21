@@ -6,7 +6,7 @@ export const HelloChild = {
         id: 'HelloChild',
       },
       style: {
-        border: '1px solid blue',
+        border: '1px solid green',
       }
     }, 'HelloChild=====');
   },
@@ -19,11 +19,11 @@ export const HelloH = {
       hello: 'HelloVue',
     };
   },
-  mounted() {
-    setTimeout(() => {
-      this.hello = '测试一下';
-    }, 1000);
-  },
+  // mounted() {
+  //   setTimeout(() => {
+  //     this.hello = '测试一下';
+  //   }, 1000);
+  // },
   render: function (createElement) {
     return createElement('h1', {
       attrs: {
@@ -38,7 +38,16 @@ export const HelloH = {
 
 export const HelloVue = {
   name: 'HelloVue',
-  components: { HelloChild },
+  data() {
+    return {
+      show: true,
+    };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.show = false;
+    }, 1000);
+  },
   render: function(createElement) {
     return createElement('div', {
       attrs: {
@@ -47,7 +56,7 @@ export const HelloVue = {
       style: {
         border: '1px solid red',
       },
-    }, [createElement(HelloChild), createElement(HelloH)]);
+    }, this.show ? [createElement(HelloH), createElement(HelloChild)] : null);
   },
 };
 
