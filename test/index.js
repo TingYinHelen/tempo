@@ -41,11 +41,12 @@ export const HelloVue = {
   data() {
     return {
       show: true,
+      borderStyle: '1px solid red',
     };
   },
   mounted() {
     setTimeout(() => {
-      this.show = false;
+      this.borderStyle = '10px dashed';
     }, 1000);
   },
   render: function(createElement) {
@@ -54,7 +55,12 @@ export const HelloVue = {
         id: 'HelloVue',
       },
       style: {
-        border: '1px solid red',
+        border: this.borderStyle,
+      },
+      on: {
+        click: function() {
+          alert(11);
+        },
       },
     }, this.show ? [createElement(HelloH), createElement(HelloChild)] : null);
   },

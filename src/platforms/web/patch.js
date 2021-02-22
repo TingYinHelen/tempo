@@ -22,6 +22,38 @@ function insert (parent, elm) {
   nodeOps.appendChild(parent, elm);
 }
 
+function patchData (el, key, nextValue, prevValue) {
+  switch (key) {
+    case 'style': 
+      for (const k in nextValue) {
+        el.style[k] = nextValue[k];
+      }
+      for (const k in prevValue) {
+        if (prevValue[k] && !nextValue.hasOwnProperty(k)) {
+          el.style[k] = '';
+        }
+      }
+      break;
+    case 'class':
+      // 这里的class是经过处理的，这个赋值class一定是一个字符串
+      el.className = nextValue.class;
+      break;
+    case 'on':
+      for (const k in prevValue) {
+        el.removeEventListener(k, prevValue[k]);
+      }
+      for (const k in nextValue) {
+        el.addEventListener(k, nextValue[k]);
+      }
+      break;
+    case 'attrs':
+      for (const k in nextValue) {
+        el.setAttribute(k, nextValue[k]);
+      }
+      break;
+  }
+}
+
 function createElm (vnode, insertedVnodeQueue, parentElm) {
   // 1. 首先把vnode全部当做组件处理
   // 2. 如果组件创建失败，则检查tag是否有定义，如果有则按照一般标签处理
@@ -39,17 +71,12 @@ function createElm (vnode, insertedVnodeQueue, parentElm) {
   if (tag) {
     vnode.elm = nodeOps.createElement(tag, vnode);
 
-    // TODO: 暂时这么写，后面需要改为updateAttrs
-    const { style, attrs } = data;
-    for (const key in attrs) {
-      vnode.elm.setAttribute(key, attrs[key]);
+    for (const key in data) {
+      patchData(vnode.elm, key, data[key], {});
     }
-    for (const key in style) {
-      vnode.elm.style[key] = style[key];
-    }
-    if (vnode.children) {
-      createChildren(vnode, vnode.children, insertedVnodeQueue);
-    }
+      
+    vnode.children && createChildren(vnode, vnode.children, insertedVnodeQueue);
+    
     parentElm && insert(parentElm, vnode.elm);
   }
 }
@@ -76,9 +103,30 @@ function createComponent (vnode, insertedVnodeQueue, parentElm) {
 function emptyNodeAt(elm) {
   return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
 }
+
 function patchVnode (vnode, oldVnode) {
   const elm = vnode.elm = oldVnode.elm;
-  const data = vnode.data;
+
+  // patch VnodeData
+  const prevData = oldVnode.data;
+  const nextData = vnode.data;
+  for (const key in nextData) {
+    const nextValue = nextData[key] || {};
+    const prevValue = prevData[key] || {};
+    patchData(elm, key, nextValue, prevValue);
+  }
+  for (const key in prevData) {
+    const nextValue = nextData[key] || {};
+    const prevValue = prevData[key] || {};
+    if (prevValue && !nextValue.hasOwnProperty(key)) {
+      patchData(elm, key, nextValue, prevValue);
+    }
+  }
+
+  
+
+
+  // patch children
   const ch = vnode.children;
   const oldCh = oldVnode.children;
 
@@ -101,6 +149,7 @@ function patchVnode (vnode, oldVnode) {
       nodeOps.removeChild(elm, child.elm);
     }
   }
+
   // TODO: vnodedata的比对没有写
 }
 // oldVnode其实是$el
