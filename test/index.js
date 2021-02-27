@@ -36,33 +36,23 @@ export const HelloH = {
   },
 };
 
-export const HelloVue = {
-  name: 'HelloVue',
+export const Hello = {
+  name: 'Hello',
   data() {
     return {
-      show: true,
-      borderStyle: '1px solid red',
+      childList: ['a', 'b', 'c'],
     };
   },
+  // ba
   mounted() {
     setTimeout(() => {
-      this.borderStyle = '10px dashed';
+      this.childList.reverse().shift();
+      this.childList = [...this.childList];
     }, 1000);
   },
-  render: function(createElement) {
-    return createElement('div', {
-      attrs: {
-        id: 'HelloVue',
-      },
-      style: {
-        border: this.borderStyle,
-      },
-      on: {
-        click: function() {
-          alert(11);
-        },
-      },
-    }, this.show ? [createElement(HelloH), createElement(HelloChild)] : null);
+  render: function(h) {
+    return h('ul', {
+    }, this.childList.map((child) => h('li', {}, child)));
   },
 };
 

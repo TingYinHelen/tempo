@@ -104,12 +104,32 @@ function emptyNodeAt(elm) {
   return new VNode(nodeOps.tagName(elm).toLowerCase(), {}, [], undefined, elm);
 }
 
+function updateChildren (elm, prevChildren, nextChildren) {
+  const oldLen = prevChildren.length;
+  const newLen = nextChildren.length;
+  const commonLen = oldLen > newLen ? newLen : oldLen;
+  
+  for (let i; i < commonLen.length; i++) {
+    patchVnode(nextChildren[i], prevChildren[i]);
+  }
+  if (oldLen < newLen) {
+    for (const child of nextChildren.slice(newLen - (newLen - oldLen))) {
+      createElm(child, [], elm);
+    }
+  } else {
+    for (const child of prevChildren.slice(oldLen - (oldLen - newLen))) {
+      elm.removeChild(child.elm);
+    }
+  }
+}
+
 function patchVnode (vnode, oldVnode) {
   const elm = vnode.elm = oldVnode.elm;
 
   // patch VnodeData
   const prevData = oldVnode.data;
   const nextData = vnode.data;
+  
   for (const key in nextData) {
     const nextValue = nextData[key] || {};
     const prevValue = prevData[key] || {};
@@ -123,9 +143,6 @@ function patchVnode (vnode, oldVnode) {
     }
   }
 
-  
-
-
   // patch children
   const ch = vnode.children;
   const oldCh = oldVnode.children;
@@ -134,8 +151,7 @@ function patchVnode (vnode, oldVnode) {
     if (typeof ch === 'string' && typeof oldCh === 'string') {
       nodeOps.setTextContent(elm, ch);
     } else {
-      // TODO:
-      // updateChildren
+      updateChildren(elm, oldCh, ch);
     }
   } else if (ch) {
     for (const child of oldCh) {
@@ -157,6 +173,10 @@ export function patch (oldVnode, vnode) {
   const insertedVnodeQueue = [];
   // oldVnode没有的时候是组件
   // 组件是没有el
+  // patch = patch + mount
+  // oldVnode可能是一个真实的el，则mount
+  // 如果有oldVnode和vnode，则执行真实的patch
+  // 没有oldVnode
   if (!oldVnode) {
     createElm(vnode, insertedVnodeQueue);
   } else {
