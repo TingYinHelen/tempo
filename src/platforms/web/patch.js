@@ -54,7 +54,7 @@ function patchData (el, key, nextValue, prevValue) {
   }
 }
 
-function createElm (vnode, insertedVnodeQueue, parentElm) {
+function createElm (vnode, insertedVnodeQueue, parentElm, refNode) {
   // 1. 首先把vnode全部当做组件处理
   // 2. 如果组件创建失败，则检查tag是否有定义，如果有则按照一般标签处理
   // 3. 如果没有定义tag，则检查是否是注释，如果不是注释，则当做文本处理
@@ -77,7 +77,12 @@ function createElm (vnode, insertedVnodeQueue, parentElm) {
       
     vnode.children && createChildren(vnode, vnode.children, insertedVnodeQueue);
     
-    parentElm && insert(parentElm, vnode.elm);
+    if (parentElm) {
+      refNode ? 
+        parentElm.insertBefore(vnode.elm, refNode) 
+        : insert(parentElm, vnode.elm);
+    }
+    
   }
 }
 
@@ -107,11 +112,12 @@ function emptyNodeAt(elm) {
 function updateChildren (elm, prevChildren, nextChildren) {
   let lastIndex = 0;
   for (let i = 0; i < nextChildren.length; i++) {
+    let find = false;
     const nextVnode = nextChildren[i];
-    console.log('nextVnode: ', nextVnode);
     for (let j = 0; j < prevChildren.length; j++) {
       const prevVnode = prevChildren[j];
       if (nextVnode.key === prevVnode.key) {
+        find = true;
         patchVnode(nextVnode, prevVnode);
         if (j < lastIndex) {
           elm.insertBefore(prevVnode.elm, nextChildren[i-1].elm.nextSibling);
@@ -119,7 +125,16 @@ function updateChildren (elm, prevChildren, nextChildren) {
           lastIndex = j;
         }
       }
-    }  
+    } 
+    if (!find) {
+      createElm(nextChildren[i], [], elm, nextChildren[i-1].elm.nextSibling);
+    }
+  }
+  for (const vnode of prevChildren) {
+    const has = nextChildren.find(child => child.key === vnode.key);
+    if (!has) {
+      elm.removeChild(vnode.elm);
+    }
   }
 }
 

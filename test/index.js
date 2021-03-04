@@ -46,8 +46,7 @@ export const Hello = {
   // ba
   mounted() {
     setTimeout(() => {
-      this.childList.reverse();
-      this.childList = [...this.childList];
+      this.childList = ['a', 'b'];
     }, 1000);
   },
   render: function(h) {
