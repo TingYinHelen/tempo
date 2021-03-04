@@ -7,6 +7,7 @@ export default class VNode {
     elm,
     context,
     componentOptions,
+    key,
   ) {
     this.tag = tag;
     this.data = data;
@@ -15,5 +16,6 @@ export default class VNode {
     this.elm = elm;
     this.context = context;
     this.componentOptions = componentOptions;
+    this.key = data && data.key;
   }
 }

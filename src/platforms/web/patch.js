@@ -105,21 +105,21 @@ function emptyNodeAt(elm) {
 }
 
 function updateChildren (elm, prevChildren, nextChildren) {
-  const oldLen = prevChildren.length;
-  const newLen = nextChildren.length;
-  const commonLen = oldLen > newLen ? newLen : oldLen;
-  
-  for (let i; i < commonLen.length; i++) {
-    patchVnode(nextChildren[i], prevChildren[i]);
-  }
-  if (oldLen < newLen) {
-    for (const child of nextChildren.slice(newLen - (newLen - oldLen))) {
-      createElm(child, [], elm);
-    }
-  } else {
-    for (const child of prevChildren.slice(oldLen - (oldLen - newLen))) {
-      elm.removeChild(child.elm);
-    }
+  let lastIndex = 0;
+  for (let i = 0; i < nextChildren.length; i++) {
+    const nextVnode = nextChildren[i];
+    console.log('nextVnode: ', nextVnode);
+    for (let j = 0; j < prevChildren.length; j++) {
+      const prevVnode = prevChildren[j];
+      if (nextVnode.key === prevVnode.key) {
+        patchVnode(nextVnode, prevVnode);
+        if (j < lastIndex) {
+          elm.insertBefore(prevVnode.elm, nextChildren[i-1].elm.nextSibling);
+        } else {
+          lastIndex = j;
+        }
+      }
+    }  
   }
 }
 
@@ -149,7 +149,9 @@ function patchVnode (vnode, oldVnode) {
 
   if (ch && oldCh) {
     if (typeof ch === 'string' && typeof oldCh === 'string') {
-      nodeOps.setTextContent(elm, ch);
+      if (ch !== oldCh) {
+        nodeOps.setTextContent(elm, ch);
+      }
     } else {
       updateChildren(elm, oldCh, ch);
     }

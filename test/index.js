@@ -46,13 +46,13 @@ export const Hello = {
   // ba
   mounted() {
     setTimeout(() => {
-      this.childList.reverse().shift();
+      this.childList.reverse();
       this.childList = [...this.childList];
     }, 1000);
   },
   render: function(h) {
     return h('ul', {
-    }, this.childList.map((child) => h('li', {}, child)));
+    }, this.childList.map((child) => h('li', {key: child}, child)));
   },
 };
 

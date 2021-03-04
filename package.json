@@ -6,9 +6,10 @@
   "author": "helen <yinhelen.hlj@qq.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --config build/webpack.config.js"
+    "dev": "webpack --config webpack.config.js"
   },
   "dependencies": {
-    "webpack": "^5.17.0"
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0"
   }
 }
