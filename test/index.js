@@ -46,7 +46,7 @@ export const Hello = {
   // ba
   mounted() {
     setTimeout(() => {
-      this.childList = ['a', 'b'];
+      this.childList = ['d', 'a', 'c', 'b'];
     }, 1000);
   },
   render: function(h) {

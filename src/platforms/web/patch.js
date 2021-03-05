@@ -110,30 +110,58 @@ function emptyNodeAt(elm) {
 }
 
 function updateChildren (elm, prevChildren, nextChildren) {
-  let lastIndex = 0;
-  for (let i = 0; i < nextChildren.length; i++) {
-    let find = false;
-    const nextVnode = nextChildren[i];
-    for (let j = 0; j < prevChildren.length; j++) {
-      const prevVnode = prevChildren[j];
-      if (nextVnode.key === prevVnode.key) {
-        find = true;
-        patchVnode(nextVnode, prevVnode);
-        if (j < lastIndex) {
-          elm.insertBefore(prevVnode.elm, nextChildren[i-1].elm.nextSibling);
-        } else {
-          lastIndex = j;
-        }
+  let oldStartIndex = 0;
+  let oldEndIndex = prevChildren.length - 1;
+  let newStartIndex = 0;
+  let newEndIndex = nextChildren.length - 1;
+
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    let oldStartVnode = prevChildren[oldStartIndex];
+    let oldEndVnode = prevChildren[oldEndIndex];
+    let newStartVnode = nextChildren[newStartIndex];
+    let newEndVnode = nextChildren[newEndIndex];
+
+    if (oldStartVnode === undefined) {
+      oldStartVnode = prevChildren[++oldStartIndex];
+    }
+    if (oldEndVnode === undefined) {
+      oldEndVnode = prevChildren[--oldEndIndex];
+    }
+
+    if (oldStartVnode.key === newStartVnode.key) {
+      patchVnode(newStartVnode, oldStartVnode);
+      oldStartIndex++;
+      newStartIndex++;
+    } else if (oldEndVnode.key === newEndVnode.key) {
+      patchVnode(newEndVnode, oldEndVnode);
+      oldEndIndex--;
+      newEndIndex--;
+    } else if (oldStartVnode.key === newEndVnode.key) {
+      patchVnode(newEndVnode, oldStartVnode);
+      elm.insertBefore(oldStartVnode.elm, oldEndVnode.elm.nextSibling);
+      newEndIndex--;
+      oldStartIndex++;
+    } else if (oldEndVnode.key === newStartVnode.key) {
+      patchVnode(newStartVnode, oldEndVnode);
+      elm.insertBefore(oldEndVnode.elm, oldStartVnode.elm);
+      oldEndIndex--;
+      newStartIndex++;
+    } else {
+      const idxInOld = prevChildren.findIndex(child => child.key === newStartVnode.key);
+      if (idxInOld >= 0) {
+        elm.insertBefore(prevChildren[idxInOld].elm, oldStartVnode.elm);
+        prevChildren[idxInOld] = undefined;
+      } else {
+        createElm(newStartVnode, [], elm, oldStartVnode.elm);
       }
-    } 
-    if (!find) {
-      createElm(nextChildren[i], [], elm, nextChildren[i-1].elm.nextSibling);
+      newStartIndex++;
     }
   }
-  for (const vnode of prevChildren) {
-    const has = nextChildren.find(child => child.key === vnode.key);
-    if (!has) {
-      elm.removeChild(vnode.elm);
+
+  if (oldEndIdx < oldStartIdx) {
+    // 添加新节点
+    for (let i = newStartIdx; i <= newEndIdx; i++) {
+      mount(nextChildren[i], container, false, oldStartVNode.el)
     }
   }
 }
