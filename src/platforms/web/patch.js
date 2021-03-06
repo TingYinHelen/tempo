@@ -152,16 +152,19 @@ function updateChildren (elm, prevChildren, nextChildren) {
         elm.insertBefore(prevChildren[idxInOld].elm, oldStartVnode.elm);
         prevChildren[idxInOld] = undefined;
       } else {
-        createElm(newStartVnode, [], elm, oldStartVnode.elm);
+        createElm(newStartVnode, elm, oldStartVnode.elm);
       }
       newStartIndex++;
     }
   }
 
-  if (oldEndIdx < oldStartIdx) {
-    // 添加新节点
-    for (let i = newStartIdx; i <= newEndIdx; i++) {
-      mount(nextChildren[i], container, false, oldStartVNode.el)
+  if (oldEndIndex < oldStartIndex) {
+    for (let i = newStartIndex; i <= newEndIndex; i++) {
+      createElm(nextChildren[i], elm, oldStartVnode.elm);
+    }
+  } else if (newEndIndex < newStartIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      elm.removeChild(prevChildren[i].elm);
     }
   }
 }
