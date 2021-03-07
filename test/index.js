@@ -40,13 +40,13 @@ export const Hello = {
   name: 'Hello',
   data() {
     return {
-      childList: ['a', 'b', 'c'],
+      childList: ['a', 'b', 'c', 'd', 'f', 'e'],
     };
   },
   // ba
   mounted() {
     setTimeout(() => {
-      this.childList = ['b', 'c'];
+      this.childList = ['a', 'c', 'd', 'b', 'g', 'e'];
     }, 1000);
   },
   render: function(h) {
