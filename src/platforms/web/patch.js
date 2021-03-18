@@ -110,96 +110,63 @@ function emptyNodeAt(elm) {
 }
 
 function updateChildren (elm, prevChildren, nextChildren) {
-  let j = 0;
-  let prevEnd = prevChildren.length - 1;
-  let nextEnd = nextChildren.length - 1;
+  let oldStartIndex = 0;
+  let oldEndIndex = prevChildren.length - 1;
+  let newStartIndex = 0;
+  let newEndIndex = nextChildren.length - 1;
 
-  outer: {
-    while (prevChildren[j].key === nextChildren[j].key) {
-      patchVnode(nextChildren[j], prevChildren[j]);
-      j++;
-      if (j > nextEnd || j > prevEnd) {
-        break outer;
-      }
+  while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+    let oldStartVnode = prevChildren[oldStartIndex];
+    let oldEndVnode = prevChildren[oldEndIndex];
+    let newStartVnode = nextChildren[newStartIndex];
+    let newEndVnode = nextChildren[newEndIndex];
+
+    if (oldStartVnode === undefined) {
+      oldStartVnode = prevChildren[++oldStartIndex];
+      continue;
     }
-    while (prevChildren[prevEnd].key === nextChildren[nextEnd].key) {
-      patchVnode(nextChildren[nextEnd--], prevChildren[prevEnd--]);
-      if (j > nextEnd || j > prevEnd) {
-        break outer;
+    if (oldEndVnode === undefined) {
+      oldEndVnode = prevChildren[--oldEndIndex];
+      continue;
+    }
+
+    if (oldStartVnode.key === newStartVnode.key) {
+      patchVnode(newStartVnode, oldStartVnode);
+      oldStartIndex++;
+      newStartIndex++;
+    } else if (oldEndVnode.key === newEndVnode.key) {
+      patchVnode(newEndVnode, oldEndVnode);
+      oldEndIndex--;
+      newEndIndex--;
+    } else if (oldStartVnode.key === newEndVnode.key) {
+      patchVnode(newEndVnode, oldStartVnode);
+      elm.insertBefore(oldStartVnode.elm, oldEndVnode.elm.nextSibling);
+      newEndIndex--;
+      oldStartIndex++;
+    } else if (oldEndVnode.key === newStartVnode.key) {
+      patchVnode(newStartVnode, oldEndVnode);
+      elm.insertBefore(oldEndVnode.elm, oldStartVnode.elm);
+      oldEndIndex--;
+      newStartIndex++;
+    } else {
+      const idxInOld = prevChildren.findIndex(child => child && child.key === newStartVnode.key);
+      if (idxInOld >= 0) {
+        elm.insertBefore(prevChildren[idxInOld].elm, oldStartVnode.elm);
+        prevChildren[idxInOld] = undefined;
+      } else {
+        createElm(newStartVnode, elm, oldStartVnode.elm);
       }
+      newStartIndex++;
     }
   }
 
-  if (prevEnd < j || nextEnd === j) {
-    while (j <= nextEnd) {
-      createElm (nextChildren[j--], elm, prevChildren[prevEnd + 1].elm);
+  if (oldEndIndex < oldStartIndex) {
+    for (let i = newStartIndex; i <= newEndIndex; i++) {
+      createElm(nextChildren[i], elm, oldStartVnode.elm);
     }
-  } else if (j > nextEnd) {
-    while (j <= prevEnd) {
-      elm.removeChild(prevChildren[j++].elm);
-    }
-  } else {
-    const nextLeft = nextEnd - j + 1;
-    const source = [];
-    for (let i = 0; i < nextLeft; i++) {
-      source.push(-1);
-    }
-    const prevStart = j;
-    const nextStart = j;
-    let pos = 0;
-    let move = false;
-    const keyIndex = {};
-    for (let i = nextStart; i < nextStart; i++) {
-      keyIndex[nextChildren[i].key] = i;
-    }
-    // 遍历旧的children的剩余未处理节点
-    for (let i = prevStart; i <= prevEnd; i++) {
-      const prevVnode = prevChildren[i];
-      // 通过索引表快速找到新的children中key值相等的vnode的位置
-      const k = keyIndex[prevVnode.key]
-      if (k !== undefined) {
-        patch(nextChildren[k], prevVnode);
-        // 更新source数组
-        source[k - nextStart] = i;
-        if (pos > k) {
-          move = true;
-        } else {
-          pos = k;
-        }
-      } else {
-        elm.removeChild(prevChildren[i]);
-      }
-    }
-
-    if (move) {
-      const seq = lis(source);
-      // j指向最长递增子序列的最后一个
-      let j = seq.length - 1;
-      // 从后往前遍历新children中的剩余未处理节点
-      for (let i = nextLeft - 1; i > 0; i--) {
-        if (source[i] === -1) {
-          // 该节点在新 children 中的真实位置索引
-          const pos = i + nextStart;
-          const nextVNode = nextChildren[pos]
-          const nextPos = pos + 1;
-          createElm(nextVNode, [], elm, nextChildren[nextPos].elm);
-        } else if (i !== seq[j]) {
-          // 该节点在新 children 中的真实位置索引
-          const pos = i + nextStart;
-          const nextVNode = nextChildren[pos];
-          // 该节点下一个节点的位置索引
-          const nextPos = pos + 1;
-          // 移动
-          elm.insertBefore(
-            nextVNode.el,
-            nextPos < nextChildren.length
-              ? nextChildren[nextPos].elm
-              : null
-          )
-        } else {
-          j--;
-        }
-      }
+  } else if (newEndIndex < newStartIndex) {
+    for (let i = oldStartIndex; i <= oldEndIndex; i++) {
+      elm.removeChild(prevChildren[i].elm);
     }
   }
 }
