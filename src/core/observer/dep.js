@@ -1,10 +1,11 @@
+let uid = 0;
 export class Dep {
   static target = null;
   id = 0;
   sub = [];
 
   constructor () {
-    this.id++;
+    this.id = uid++;
   }
 
   depend () {

@@ -20,6 +20,7 @@ function flushSchedulerQueue () {
 export function queueWatcher (watcher) {
   const id = watcher.id;
   if (!has[id]) {
+    has[id] = true;
     queue.push(watcher);
   }
   if (!waiting) {

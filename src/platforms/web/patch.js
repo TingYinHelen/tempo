@@ -194,9 +194,8 @@ function patchVnode (vnode, oldVnode) {
   // patch children
   const ch = vnode.children;
   const oldCh = oldVnode.children;
-
   if (ch && oldCh) {
-    if (typeof ch === 'string' && typeof oldCh === 'string') {
+    if (typeof ch === 'string' && typeof oldCh !== 'object') {
       if (ch !== oldCh) {
         nodeOps.setTextContent(elm, ch);
       }

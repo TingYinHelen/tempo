@@ -36,22 +36,43 @@ export const HelloH = {
   },
 };
 
+// export const Hello = {
+//   name: 'Hello',
+//   data() {
+//     return {
+//       childList: ['a', 'b', 'c', 'd', 'f', 'e'],
+//     };
+//   },
+//   // ba
+//   mounted() {
+//     setTimeout(() => {
+//       this.childList = ['a', 'c', 'd', 'b', 'g', 'e'];
+//     }, 1000);
+//   },
+//   render: function(h) {
+//     return h('ul', {
+//     }, this.childList.map((child) => h('li', {key: child}, child)));
+//   },
+// };
 export const Hello = {
   name: 'Hello',
   data() {
     return {
-      childList: ['a', 'b', 'c', 'd', 'f', 'e'],
-    };
+      a: 1,
+      b: 2,
+      c: 3,
+    }
   },
-  // ba
   mounted() {
     setTimeout(() => {
-      this.childList = ['a', 'c', 'd', 'b', 'g', 'e'];
+      this.a = 'a';
+      this.b = 'b';
+      this.c = 'c';
     }, 1000);
   },
   render: function(h) {
-    return h('ul', {
-    }, this.childList.map((child) => h('li', {key: child}, child)));
+    console.log('=====+++++');
+    return h('ul', {}, [h('li', {}, this.a), h('li', {}, this.b), h('li', {}, this.c)]);
   },
-};
+}
 
