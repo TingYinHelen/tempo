@@ -58,21 +58,22 @@ export const Hello = {
   name: 'Hello',
   data() {
     return {
-      a: 1,
-      b: 2,
-      c: 3,
+      firstName: 'Foo',
+      lastName: 'Bar',
     }
+  },
+  computed: {
+    fullName: function () {
+      return `${this.firstName} ${this.lastName}`;
+    },
   },
   mounted() {
     setTimeout(() => {
-      this.a = 'a';
-      this.b = 'b';
-      this.c = 'c';
+      this.firstName = 'helen';
     }, 1000);
   },
   render: function(h) {
-    console.log('=====+++++');
-    return h('ul', {}, [h('li', {}, this.a), h('li', {}, this.b), h('li', {}, this.c)]);
+    return h('div', {}, this.fullName);
   },
 }
 
