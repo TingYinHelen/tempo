@@ -21,3 +21,4 @@ new Tempo({
 - [x] diff算法(这里实现了三种方法，react, vue2.x, vue3)
 - [x] 响应式
 - [x] 生命周期(created, mounted)
+- [x] nextTick
