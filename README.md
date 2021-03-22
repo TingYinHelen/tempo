@@ -22,3 +22,4 @@ new Tempo({
 - [x] 响应式
 - [x] 生命周期(created, mounted)
 - [x] nextTick
+- [x] computed
