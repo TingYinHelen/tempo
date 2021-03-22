@@ -9,8 +9,12 @@ export class Watcher {
   vm = null;
   id = null;
 
-  constructor (vm, exp) {
+  constructor (vm, exp, options) {
     Dep.target = this;
+
+    if (options) {
+      this.lazy = options.lazy;
+    }
 
     this.vm = vm;
     this.getter = exp;
@@ -19,7 +23,12 @@ export class Watcher {
   }
 
   get () {
-    this.getter.call(this.vm);
+    if (this.lazy) {
+      // 这里暂时这样写
+      console.log('========');
+    } else {
+      this.getter.call(this.vm);
+    }
   }
 
   addDep (dep) {

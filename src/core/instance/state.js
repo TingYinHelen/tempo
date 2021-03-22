@@ -26,7 +26,8 @@ function initData (vm) {
 function initComputed (vm, computed) {
   for (const key in computed) {
     const getter = computed[key];
-    new Watcher(vm, getter);
+    const computedWatcherOptions = { lazy: true };
+    new Watcher(vm, getter, computedWatcherOptions);
     if (!(key in vm)) {
       defineComputed(vm, key, getter);
     } else {
