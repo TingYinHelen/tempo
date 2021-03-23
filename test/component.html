@@ -7,7 +7,7 @@
   <title>Toy Component</title>
   <script type="module">
     import Vue from '/src/index.js';
-    import { Hello } from './index.js';
+    // import { Hello } from './index.js';
 
     // Vue.component('button-counter', {
     //   data: {
@@ -17,11 +17,33 @@
     //     return h('button', {}, 'global button');
     //   },
     // });
+    const AppLayout = {
+      render(h) {
+        return h('div', {}, [
+          h('header', {}, this.$slots.header),
+          h('main', {}, this.$slots.default),
+          h('footer', {}, this.$slots.footer),
+        ]);
+      }
+    };
 
     new Vue({
       el: '#app',
-      render: function(h) {
-        return h(Hello);
+      data() {
+        return {
+          title: '我是标题',
+          msg: '我是内容',
+          desc: '其它信息'
+        }
+      },
+      render(h) {
+        return h('div', {}, [
+          h(AppLayout, {}, [
+            h('h1', { slot: 'header' }, this.title),
+            h('p', { slot: 'default' }, this.msg),
+            h('p', { slot: 'footer' }, this.desc),
+          ])
+        ]);
       },
     });
   </script>

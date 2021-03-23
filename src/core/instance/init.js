@@ -14,7 +14,6 @@ export function initMixin(Vue) {
       // merge类静态的option和传入的option
       vm.$options = mergeOptions(vm.constructor.options, options, vm);
     }
-
     initLifecycle(vm); // 初始化$children和$parent
     initRender(vm);  // $createElement
     // 数据初始化之前调用
@@ -41,7 +40,11 @@ function initInternalComponent(vm, options) {
   //   _parentVnode: vnode,
   //   parent, // activeInstance当前激活的组件实例
   // };
+  const parentVnode = options._parentVnode;
   const opts = vm.$options = Object.create(vm.constructor.options);
   opts.parent = options.parent;
   opts._parentVnode = options._parentVnode;
+  
+  const vnodeComponentOptions = parentVnode.componentOptions;
+  opts._renderChildren = vnodeComponentOptions.children;
 }

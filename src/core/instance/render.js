@@ -17,6 +17,18 @@ export function renderMixin (Vue) {
 }
 
 export function initRender (vm) {
-  // TODO: $createElement为什么不是原型上的方法 (需要把this传进去)
+  if (vm.$options._renderChildren) {
+    vm.$slots = resolveSlots(vm.$options._renderChildren, vm);
+  }
   vm.$createElement = (tag, data, children) => createElement(tag, data, children, vm);
+}
+
+function resolveSlots (chidren, vm) {
+  const slot = {};
+  for (const child of chidren) {
+    if (child.data.slot) {
+      slot[child.data.slot] = [child];
+    }
+  }
+  return slot;
 }
