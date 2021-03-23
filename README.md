@@ -23,3 +23,5 @@ new Tempo({
 - [x] 生命周期(created, mounted)
 - [x] nextTick
 - [x] computed
+- [x] slot
+- [x] scopedSlots
