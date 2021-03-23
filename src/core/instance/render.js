@@ -1,9 +1,13 @@
 import { createElement } from '../vdom/create-element.js';
+import { resolveSlots, resolveScopedSlots } from './render-helpers/resolve-slots.js';
 
 export function renderMixin (Vue) {
   Vue.prototype._render = function () {
     const vm = this;
     const { render, _parentVnode } = vm.$options;
+    if (_parentVnode) {
+      vm.$scopedSlots = resolveScopedSlots(_parentVnode.data.scopedSlots);
+    }
 
     vm.$vnode = _parentVnode;
 
@@ -18,17 +22,9 @@ export function renderMixin (Vue) {
 
 export function initRender (vm) {
   if (vm.$options._renderChildren) {
-    vm.$slots = resolveSlots(vm.$options._renderChildren, vm);
+    vm.$slots = resolveSlots(vm.$options._renderChildren);
   }
   vm.$createElement = (tag, data, children) => createElement(tag, data, children, vm);
 }
 
-function resolveSlots (chidren, vm) {
-  const slot = {};
-  for (const child of chidren) {
-    if (child.data.slot) {
-      slot[child.data.slot] = [child];
-    }
-  }
-  return slot;
-}
+
