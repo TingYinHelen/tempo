@@ -7,6 +7,11 @@
   <title>Toy Component</title>
   <script type="module">
     import Vue from '/src/index.js';
+    Vue.use({
+      install: (Vue) => {
+        console.log('Vue: ', Vue);
+      }
+    })
     // import { Hello } from './index.js';
 
     // Vue.component('button-counter', {

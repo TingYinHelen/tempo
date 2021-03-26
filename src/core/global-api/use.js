@@ -6,9 +6,9 @@ export function initUse (Vue) {
     }
     arg.unshift(this);
     if (Object.prototype.toString.call(plugin).indexOf('Function') > 0) {
-      plugin.apply(arg);
+      plugin.apply(null, arg);
     } else if (Object.prototype.toString.call(plugin.install).indexOf('Function') > 0) {
-      plugin.install.apply(arg);
+      plugin.install.apply(null, arg);
     }
     installedPlugins.push(plugin)
     return this;
