@@ -1,11 +1,13 @@
 import { ASSET_TYPES } from '/src/share/constants.js';
 import { initExtend } from './extend.js';
 import { initAssetRegisters } from './assets.js';
+import { initUse } from './use.js';
 
 export function initGlobalAPI(Vue) {
   Vue.options = Object.create(null);
   Vue.options._base = Vue;
 
+  initUse(Vue);
   initExtend(Vue);
 
   ASSET_TYPES.forEach(type => {
