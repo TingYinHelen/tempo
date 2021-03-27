@@ -25,3 +25,4 @@ new Tempo({
 - [x] computed
 - [x] slot
 - [x] scopedSlots
+- [x] Vue.use
