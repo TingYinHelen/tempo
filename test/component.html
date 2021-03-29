@@ -7,11 +7,11 @@
   <title>Toy Component</title>
   <script type="module">
     import Vue from '/src/index.js';
-    Vue.use({
-      install: (Vue) => {
-        console.log('Vue: ', Vue);
-      }
-    })
+    // Vue.use({
+    //   install: (Vue) => {
+    //     console.log('Vue: ', Vue);
+    //   }
+    // })
     // import { Hello } from './index.js';
 
     // Vue.component('button-counter', {
@@ -22,19 +22,31 @@
     //     return h('button', {}, 'global button');
     //   },
     // });
+    Vue.mixin({
+      created() {
+        console.log('mixin======');
+      },
+    });
     const child = {
       data() {
         return {
           msg: 'Vue'
         };
       },
+      created() {
+        console.log('child===');
+      },
       render(h) {
         return h('div', { class: 'child' }, this.$scopedSlots.default({ text: 'hello', msg: this.msg }))
       }
     };
+    
     new Vue({
       el: '#app',
       components: {child},
+      created() {
+        console.log('parent==');
+      },
       render(h) {
         return h('div', {}, [h('child', {
           scopedSlots: {
