@@ -26,3 +26,4 @@ new Tempo({
 - [x] slot
 - [x] scopedSlots
 - [x] Vue.use
+- [x] mixin
