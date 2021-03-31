@@ -13,10 +13,12 @@ class Observer {
 }
 
 export function observe (value) {
+  if (typeof value !== 'object') return ;
   const ob = new Observer(value);
 }
 
 function defineReactive (obj, key, val) {
+  observe(obj[key])
   const dep = new Dep();
 
   // const property = Object.getOwnPropertyDescriptor(obj, key);
