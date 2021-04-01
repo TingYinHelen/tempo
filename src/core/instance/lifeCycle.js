@@ -34,6 +34,7 @@ export function mountComponent(vm, el) {
   callHook(vm, 'beforeMount');
 
   const updateComponent = () => {
+    activeInstance = vm;
     vm._update(vm._render());
   };
   new Watcher(vm, updateComponent);
@@ -50,8 +51,9 @@ export function lifecycleMixin(Vue) {
     const  prevVnode = vm._vnode;
 
     // 实际上prevActiveInstance和当前的vm是一个父子关系。
-    const prevActiveInstance = activeInstance;
-    activeInstance = vm;
+    // const prevActiveInstance = activeInstance;
+    // activeInstance = vm;
+    // console.log('activeInstance: ', activeInstance);
 
     // _vnode(子),$vnode(父)
     // 这里的vnode是通过该组件的render函数生成的
@@ -65,9 +67,7 @@ export function lifecycleMixin(Vue) {
       // 一般是修改了data的属性值之后重新渲染
       vm.$el = vm.__patch__(prevVnode, vnode);
     }
-    
-    
-    activeInstance = prevActiveInstance;
+    // activeInstance = prevActiveInstance;
   }
 
   // TODO: 

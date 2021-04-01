@@ -1,79 +1,38 @@
-export const HelloChild = {
-  name: 'HelloChild',
-  render: function (createElement) {
-    return createElement('div', {
-      attrs: {
-        id: 'HelloChild',
-      },
+import Vue from '../src/index.js';
+import Vuex from './vuex/index.js';
+    
+Vue.use(Vuex);
+    
+const grandChild = {
+  render(h) {
+    return h('div', {
       style: {
-        border: '1px solid green',
+        border: '1px solid red'
       }
-    }, 'HelloChild=====');
-  },
-};
-
-export const HelloH = {
-  name: 'HelloH',
+    }, 'grandChild')
+  }
+}
+    
+const child = {
+  components: {grandChild},
   data() {
     return {
-      hello: 'HelloVue',
+      msg: 'Vue'
     };
   },
-  // mounted() {
-  //   setTimeout(() => {
-  //     this.hello = '测试一下';
-  //   }, 1000);
-  // },
-  render: function (createElement) {
-    return createElement('h1', {
-      attrs: {
-        id: 'h',
-      },
-      style: {
-        border: '1px solid blue',
-      }
-    }, this.hello);
-  },
+  render(h) {
+    return h('div', { class: 'child' }, [h('grandChild')])
+  }
 };
-
-// export const Hello = {
-//   name: 'Hello',
-//   data() {
-//     return {
-//       childList: ['a', 'b', 'c', 'd', 'f', 'e'],
-//     };
-//   },
-//   // ba
-//   mounted() {
-//     setTimeout(() => {
-//       this.childList = ['a', 'c', 'd', 'b', 'g', 'e'];
-//     }, 1000);
-//   },
-//   render: function(h) {
-//     return h('ul', {
-//     }, this.childList.map((child) => h('li', {key: child}, child)));
-//   },
-// };
-export const Hello = {
-  name: 'Hello',
-  data() {
-    return {
-      firstName: 'Foo',
-      lastName: 'Bar',
-    }
+    
+new Vue({
+  el: '#app',
+  components: {child},
+  store: {
+    foo: 'foo',
   },
-  computed: {
-    fullName: function () {
-      return `${this.firstName} ${this.lastName}`;
-    },
-  },
-  mounted() {
-    setTimeout(() => {
-      this.firstName = 'helen';
-    }, 1000);
-  },
-  render: function(h) {
-    return h('div', {}, this.fullName);
-  },
-}
-
+  render(h) {
+    return h('div', {}, [h('child')])
+  }
+})
+console.log(111);

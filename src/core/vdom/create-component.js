@@ -34,7 +34,6 @@ const componentVNodeHooks = {
       // TODO: keepAlive
     } else {
       // 子组件的实例化就在这个时机执行
-      // TODO: activeInstance
       const child = vnode.componentInstance = createComponentInstanceForVnode(vnode, activeInstance);
       // 组件的el为undefined
       // 这个时候child的$options多了几个属性(parent, parentVnode)
