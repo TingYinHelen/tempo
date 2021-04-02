@@ -1,4 +1,4 @@
-import { LIFECYCLE_HOOKS } from '/src/share/constants.js';
+import { LIFECYCLE_HOOKS, ASSET_TYPES } from '/src/share/constants.js';
 
 const defaultStrat = (parentVal, childVal) => {
   return childVal ? childVal : parentVal;
@@ -16,13 +16,27 @@ function mergeHook (parentVal, childVal) {
     : parentVal;
 }
 
+function mergeAssets (parentVal, childVal) {
+  if (childVal) {
+    return { ...parentVal, ...childVal }
+  } else {
+    return { ...parentVal }
+  }
+}
+
+// 生命周期的merge策略
 LIFECYCLE_HOOKS.forEach((hook) => {
   strats[hook] = mergeHook;
 });
 
+ASSET_TYPES.forEach((type) => {
+  strats[`${type}s`] = mergeAssets;
+});
+
+
 export function mergeOptions (parent, child, vm) {
   const options = {};
-  // TODO: 暂时只实现了生命周期钩子
+  
   for (const key in parent) {
     mergeField(key);
   }
